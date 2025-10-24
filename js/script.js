@@ -293,6 +293,19 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%cDeveloped by @lordgaruda', 'color: #757575; font-size: 14px;');
     console.log('%cGitHub: https://github.com/lordgaruda', 'color: #1976d2; font-size: 12px;');
     
+    // =========================================
+    // Initialize dynamic 3D interactions
+    // =========================================
+    try {
+        initParticles(); // from particles.js (if available)
+    } catch (e) {
+        // particles.js not loaded or failed — continue silently
+    }
+
+    initMouseParallax();
+    initTiltCards();
+    initScrollParallax();
+
 });
 
 // =========================================
@@ -320,3 +333,88 @@ window.addEventListener('load', function() {
         console.log(`Page loaded in ${pageLoadTime}ms`);
     }
 });
+
+// =========================================
+// Dynamic 3D helpers
+// =========================================
+
+// Throttle helper using RAF
+function rafThrottle(fn) {
+    let busy = false;
+    return function(...args) {
+        if (busy) return;
+        busy = true;
+        requestAnimationFrame(() => {
+            fn.apply(this, args);
+            busy = false;
+        });
+    };
+}
+
+// Mouse-based parallax for elements with data-parallax attribute
+function initMouseParallax() {
+    const layers = document.querySelectorAll('[data-parallax]');
+    if (!layers.length) return;
+
+    const onMove = rafThrottle((e) => {
+        const x = (e.clientX / window.innerWidth) - 0.5;
+        const y = (e.clientY / window.innerHeight) - 0.5;
+
+        layers.forEach(el => {
+            const depth = parseFloat(el.getAttribute('data-parallax')) || 0.03;
+            const translateX = -x * depth * 100;
+            const translateY = -y * depth * 70;
+            el.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) translateZ(0)`;
+        });
+    });
+
+    window.addEventListener('mousemove', onMove);
+}
+
+// Tilt effect on cards
+function initTiltCards() {
+    const cards = document.querySelectorAll('.feature-card, .value-card, .risk-card, .github-card, .sidebar-card');
+    if (!cards.length) return;
+
+    cards.forEach(card => {
+        card.classList.add('tilt-enabled');
+
+        const onMove = (e) => {
+            const rect = card.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width;
+            const py = (e.clientY - rect.top) / rect.height;
+            const rx = (py - 0.5) * 12; // rotateX
+            const ry = (px - 0.5) * -12; // rotateY
+            const tz = 20; // translateZ for pop
+
+            card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)`;
+            card.style.transition = 'transform 0.08s ease';
+        };
+
+        const onLeave = () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.5s cubic-bezier(.2,.8,.2,1)';
+        };
+
+        card.addEventListener('mousemove', rafThrottle(onMove));
+        card.addEventListener('mouseleave', onLeave);
+    });
+}
+
+// Scroll-based parallax for elements with data-scroll-depth
+function initScrollParallax() {
+    const scrollers = document.querySelectorAll('[data-scroll-depth]');
+    if (!scrollers.length) return;
+
+    const onScroll = rafThrottle(() => {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        scrollers.forEach(el => {
+            const depth = parseFloat(el.getAttribute('data-scroll-depth')) || 0.2;
+            const translate = -(scrollY * depth);
+            el.style.transform = `translate3d(0, ${translate}px, 0)`;
+        });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+}
+

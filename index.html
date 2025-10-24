@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+    <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
@@ -37,14 +38,14 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Welcome to AlgoAct</h1>
-                <p class="hero-subtitle">Your Gateway to Algorithmic Trading Excellence</p>
-                <p class="hero-description">
+            <div class="hero-content" data-parallax="0.02">
+                <h1 class="hero-title" data-parallax="0.04">Welcome to AlgoAct</h1>
+                <p class="hero-subtitle" data-parallax="0.03">Your Gateway to Algorithmic Trading Excellence</p>
+                <p class="hero-description" data-parallax="0.02">
                     Discover powerful strategies, insights, and tools for automated trading. 
                     Enhance your trading with data-driven algorithms and professional resources.
                 </p>
-                <div class="hero-actions">
+                <div class="hero-actions" data-parallax="0.01">
                     <a href="#features" class="btn btn-primary">Explore Features</a>
                     <a href="about.html" class="btn btn-secondary">Learn More</a>
                 </div>
@@ -141,7 +142,7 @@
                     </ul>
                 </div>
                 <div class="info-image">
-                    <div class="image-placeholder">
+                    <div class="image-placeholder" data-scroll-depth="0.15">
                         <span class="material-icons">trending_up</span>
                     </div>
                 </div>
@@ -195,6 +196,7 @@
         </div>
     </footer>
 
+    <script src="js/particles.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
