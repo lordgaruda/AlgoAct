@@ -106,9 +106,18 @@
     box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
 html {
     font-size: var(--font-size-base);
     scroll-behavior: smooth;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -119,6 +128,9 @@ body {
     background-attachment: fixed;
     overflow-x: hidden;
     position: relative;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Animated Background Pattern */
@@ -154,6 +166,12 @@ body::before {
     z-index: -2;
     pointer-events: none;
     opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+    .bg-canvas {
+        opacity: 0.3;
+    }
 }
 
 /* =========================================
@@ -216,6 +234,30 @@ ul {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 var(--spacing-md);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    /* Better touch targets */
+    button,
+    a {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Prevent text size adjustment on orientation change */
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+    
+    /* Smooth scrolling on iOS */
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 /* =========================================
@@ -1443,20 +1485,41 @@ section {
     .content-sidebar {
         position: static;
     }
+    
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
 }
 
 @media (max-width: 768px) {
     /* Typography */
     .hero-title {
         font-size: 2rem;
+        line-height: 1.2;
     }
     
     .hero-subtitle {
         font-size: 1.25rem;
+        line-height: 1.4;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+        line-height: 1.6;
     }
     
     .section-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
     }
     
     .page-header h1 {
@@ -1464,8 +1527,26 @@ section {
     }
     
     /* Navigation */
+    .navbar {
+        position: sticky;
+        top: 0;
+    }
+    
+    .nav-wrapper {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .logo {
+        font-size: 1.25rem;
+    }
+    
+    .logo .material-icons {
+        font-size: 1.5rem;
+    }
+    
     .menu-toggle {
         display: block;
+        z-index: 1001;
     }
     
     .nav-menu {
@@ -1474,37 +1555,62 @@ section {
         left: 0;
         right: 0;
         background: var(--dark-surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
-        padding: var(--spacing-md);
+        padding: 0;
         box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         max-height: 0;
         overflow: hidden;
         transition: max-height var(--transition-base);
         border-bottom: 1px solid var(--dark-border);
+        gap: 0;
+        align-items: stretch;
     }
     
     .nav-menu.active {
         max-height: 500px;
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .nav-menu li {
+        width: 100%;
     }
     
     .nav-menu a {
         display: block;
-        padding: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-lg);
         width: 100%;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-menu a::before {
+        display: none;
+    }
+    
+    .nav-menu .github-link {
+        margin: var(--spacing-sm) var(--spacing-lg);
+        width: calc(100% - 2 * var(--spacing-lg));
+        justify-content: center;
+        border-bottom: none;
     }
     
     /* Grid Layouts */
     .info-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
     }
     
     .features-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
     }
     
     .values-grid,
     .risk-cards {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
     }
     
     /* Hero */
@@ -1512,41 +1618,406 @@ section {
         padding: var(--spacing-xl) 0;
     }
     
+    .hero-content {
+        padding: 0 var(--spacing-sm);
+    }
+    
     .hero-actions {
         flex-direction: column;
+        gap: var(--spacing-sm);
     }
     
     .hero-actions .btn {
         width: 100%;
         justify-content: center;
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .feature-icon .material-icons {
+        font-size: 2rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.25rem;
+    }
+    
+    /* Info Section */
+    .info-section {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .image-placeholder {
+        max-width: 100%;
+    }
+    
+    .image-placeholder .material-icons {
+        font-size: 5rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+    }
+    
+    /* Content Section */
+    .content-section {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .content-main h2 {
+        font-size: 1.5rem;
+    }
+    
+    .content-main h3 {
+        font-size: 1.25rem;
+    }
+    
+    /* Notice Boxes */
+    .notice-box,
+    .warning-box,
+    .highlight-box,
+    .contact-box,
+    .acknowledgment-box {
+        flex-direction: column;
+        padding: var(--spacing-md);
+        gap: var(--spacing-sm);
+    }
+    
+    .notice-box .material-icons,
+    .warning-box .material-icons,
+    .highlight-box .material-icons,
+    .contact-box .material-icons,
+    .acknowledgment-box .material-icons {
+        font-size: 1.5rem;
+    }
+    
+    /* Cards */
+    .value-card,
+    .risk-card {
+        padding: var(--spacing-md);
+    }
+    
+    .value-card .material-icons,
+    .risk-card .material-icons {
+        font-size: 2.5rem;
     }
     
     /* Footer */
+    .footer {
+        padding: var(--spacing-xl) 0 var(--spacing-md);
+    }
+    
     .footer-content {
         grid-template-columns: 1fr;
         gap: var(--spacing-lg);
+    }
+    
+    .footer-section h3 {
+        font-size: 1.25rem;
+    }
+    
+    .footer-section h4 {
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        padding-top: var(--spacing-md);
+        font-size: 0.9rem;
+    }
+    
+    /* CTA Section */
+    .cta-section h2 {
+        font-size: 1.75rem;
+    }
+    
+    .cta-section p {
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
     :root {
         --font-size-base: 14px;
+        --spacing-sm: 0.75rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-xxl: 2.5rem;
     }
     
+    /* Typography */
     .hero-title {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        line-height: 1.2;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        line-height: 1.4;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .hero-description {
+        font-size: 0.95rem;
+        margin-bottom: var(--spacing-md);
     }
     
     .section-title {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        line-height: 1.3;
+        margin-bottom: var(--spacing-sm);
     }
     
+    .section-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    /* Container & Spacing */
     .container {
-        padding: 0 var(--spacing-sm);
+        padding: 0 1rem;
     }
     
     section {
         padding: var(--spacing-xl) 0;
+    }
+    
+    .hero,
+    .info-section,
+    .content-section {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    /* Navigation */
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .logo .material-icons {
+        font-size: 1.3rem;
+    }
+    
+    .menu-toggle .material-icons {
+        font-size: 1.5rem;
+    }
+    
+    .nav-menu a {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.95rem;
+    }
+    
+    /* Feature Cards */
+    .features-grid {
+        gap: var(--spacing-sm);
+    }
+    
+    .feature-card {
+        padding: var(--spacing-md);
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .feature-icon .material-icons {
+        font-size: 1.75rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .feature-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+    
+    .hero-actions {
+        gap: 0.75rem;
+    }
+    
+    /* Info Section */
+    .info-grid {
+        gap: var(--spacing-md);
+    }
+    
+    .info-content h2 {
+        font-size: 1.4rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .info-content p {
+        font-size: 0.9rem;
+    }
+    
+    .info-list li {
+        font-size: 0.9rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .image-placeholder {
+        max-width: 100%;
+        aspect-ratio: 1;
+    }
+    
+    .image-placeholder .material-icons {
+        font-size: 4rem;
+    }
+    
+    /* Content Section */
+    .content-main h2 {
+        font-size: 1.3rem;
+        margin-top: var(--spacing-md);
+    }
+    
+    .content-main h3 {
+        font-size: 1.15rem;
+    }
+    
+    .content-main h4 {
+        font-size: 1.05rem;
+    }
+    
+    .content-main p {
+        font-size: 0.9rem;
+    }
+    
+    /* Notice Boxes */
+    .notice-box,
+    .warning-box,
+    .highlight-box,
+    .contact-box,
+    .acknowledgment-box {
+        padding: var(--spacing-sm);
+        gap: var(--spacing-xs);
+        margin: var(--spacing-md) 0;
+    }
+    
+    .notice-box .material-icons,
+    .warning-box .material-icons,
+    .highlight-box .material-icons,
+    .contact-box .material-icons,
+    .acknowledgment-box .material-icons {
+        font-size: 1.25rem;
+    }
+    
+    /* Cards */
+    .value-card,
+    .risk-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .value-card .material-icons,
+    .risk-card .material-icons {
+        font-size: 2rem;
+    }
+    
+    .value-card h4,
+    .risk-card h4 {
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .value-card p,
+    .risk-card p {
+        font-size: 0.85rem;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: var(--spacing-lg) 0 var(--spacing-sm);
+    }
+    
+    .footer-content {
+        gap: var(--spacing-md);
+    }
+    
+    .footer-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .footer-section h4 {
+        font-size: 1rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .footer-section p,
+    .footer-section ul li a {
+        font-size: 0.85rem;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-link .material-icons {
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        font-size: 0.8rem;
+        padding-top: var(--spacing-sm);
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .cta-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .cta-section p {
+        font-size: 0.9rem;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    /* Disable 3D transforms on mobile for better performance */
+    .feature-card,
+    .value-card,
+    .risk-card {
+        transform: none !important;
+    }
+    
+    .feature-card:hover,
+    .value-card:hover,
+    .risk-card:hover {
+        transform: translateY(-4px) !important;
+    }
+    
+    /* Reduce animation complexity on mobile */
+    * {
+        animation-duration: 0.3s !important;
     }
 }
 
