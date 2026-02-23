@@ -4,6 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+    const scrollToTop = useCallback((e: React.MouseEvent) => {
+        e.preventDefault()
+        window.location.hash = '#/'
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, [])
+
     const scrollToFeatures = useCallback((e: React.MouseEvent) => {
         e.preventDefault()
         // If not on the home page, navigate there first
@@ -19,7 +25,7 @@ export default function Navbar() {
     }, [])
 
     const navLinks = [
-        { href: '#/', label: 'Home' },
+        { href: '#/', label: 'Home', onClick: scrollToTop },
         { href: '#/', label: 'Features', onClick: scrollToFeatures },
         { href: '#/about', label: 'About' },
         { href: '#/privacy', label: 'Privacy' },
@@ -38,6 +44,7 @@ export default function Navbar() {
                     {/* Logo */}
                     <motion.a
                         href="#/"
+                        onClick={scrollToTop}
                         className="flex items-center gap-2 text-xl font-bold"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
