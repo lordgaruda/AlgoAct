@@ -1,12 +1,26 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+    const scrollToFeatures = useCallback((e: React.MouseEvent) => {
+        e.preventDefault()
+        // If not on the home page, navigate there first
+        if (window.location.hash !== '#/' && window.location.hash !== '') {
+            window.location.hash = '#/'
+            // Wait for page to render, then scroll
+            setTimeout(() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+            }, 100)
+        } else {
+            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [])
+
     const navLinks = [
         { href: '#/', label: 'Home' },
-        { href: '#features', label: 'Features' },
+        { href: '#/', label: 'Features', onClick: scrollToFeatures },
         { href: '#/about', label: 'About' },
         { href: '#/privacy', label: 'Privacy' },
         { href: '#/disclaimer', label: 'Disclaimer' },
@@ -40,6 +54,7 @@ export default function Navbar() {
                             <motion.a
                                 key={link.label}
                                 href={link.href}
+                                onClick={link.onClick}
                                 className="text-slate hover:text-cyan transition-colors text-sm font-medium"
                                 whileHover={{ y: -2 }}
                             >
@@ -95,7 +110,10 @@ export default function Navbar() {
                                         key={link.label}
                                         href={link.href}
                                         className="text-slate hover:text-cyan transition-colors py-2"
-                                        onClick={() => setIsMenuOpen(false)}
+                                        onClick={(e) => {
+                                            if (link.onClick) link.onClick(e)
+                                            setIsMenuOpen(false)
+                                        }}
                                     >
                                         {link.label}
                                     </a>

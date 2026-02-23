@@ -3,9 +3,17 @@ import { motion } from 'framer-motion'
 export default function Footer() {
     const currentYear = new Date().getFullYear()
 
+    const scrollToFeatures = (e: React.MouseEvent) => {
+        e.preventDefault()
+        window.location.hash = '#/'
+        setTimeout(() => {
+            document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+    }
+
     const quickLinks = [
         { href: '#/', label: 'Home' },
-        { href: '#/#features', label: 'Features' },
+        { href: '#/', label: 'Features', onClick: scrollToFeatures },
         { href: '#/about', label: 'About' },
     ]
 
@@ -46,6 +54,7 @@ export default function Footer() {
                                 <li key={link.label}>
                                     <a
                                         href={link.href}
+                                        onClick={link.onClick}
                                         className="text-slate hover:text-cyan transition-colors duration-200"
                                     >
                                         {link.label}
