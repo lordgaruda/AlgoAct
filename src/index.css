@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   AlgoAct - Deep Space Theme
+   3D Algorithm Visualizer
+   ========================================= */
+
+:root {
+  --midnight: #020617;
+  --midnight-50: #0a1628;
+  --midnight-100: #0f172a;
+  --midnight-200: #1e293b;
+  --cyan: #22d3ee;
+  --cyan-glow: rgba(34, 211, 238, 0.5);
+  --slate: #94a3b8;
+  
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--midnight);
+  color: #e2e8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animated gradient background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  animation: backgroundPulse 20s ease-in-out infinite;
+}
+
+@keyframes backgroundPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* =========================================
+   Glassmorphism Utilities
+   ========================================= */
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(34, 211, 238, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(34, 211, 238, 0.15);
+  }
+  
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .neon-glow {
+    box-shadow: 
+      0 0 20px rgba(34, 211, 238, 0.4),
+      0 0 40px rgba(34, 211, 238, 0.2),
+      0 0 60px rgba(34, 211, 238, 0.1);
+  }
+  
+  .neon-text {
+    text-shadow: 
+      0 0 10px rgba(34, 211, 238, 0.8),
+      0 0 20px rgba(34, 211, 238, 0.5),
+      0 0 30px rgba(34, 211, 238, 0.3);
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3 bg-cyan text-midnight-100 font-semibold rounded-lg;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-glow-cyan hover:scale-105;
+    @apply active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 glass rounded-lg font-medium;
+    @apply border border-cyan/30 text-cyan;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:border-cyan/60 hover:bg-cyan/10;
+  }
+}
+
+/* =========================================
+   Typography
+   ========================================= */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+/* =========================================
+   Scrollbar
+   ========================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--midnight-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--midnight-200);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate);
+}
+
+/* =========================================
+   Canvas/WebGL Container
+   ========================================= */
+
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.canvas-container canvas {
+  display: block;
+}
+
+/* =========================================
+   Bento Grid
+   ========================================= */
+
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Selection */
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+  color: white;
+}
