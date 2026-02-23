@@ -1,4 +1,5 @@
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -182,22 +183,22 @@ function HomePage() {
                             View on GitHub
                         </a>
                     </motion.div>
-
-                    {/* Scroll indicator */}
-                    <motion.div
-                        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                    >
-                        <div className="w-5 h-8 rounded-full border-2 border-white/15 flex items-start justify-center p-1">
-                            <motion.div
-                                className="w-1 h-2 bg-cyan rounded-full"
-                                animate={{ y: [0, 10, 0] }}
-                                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                            />
-                        </div>
-                    </motion.div>
                 </div>
+
+                {/* Scroll indicator — anchored to bottom of full-height section */}
+                <motion.div
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+                >
+                    <div className="w-5 h-8 rounded-full border-2 border-white/15 flex items-start justify-center p-1">
+                        <motion.div
+                            className="w-1 h-2 bg-cyan rounded-full"
+                            animate={{ y: [0, 10, 0] }}
+                            transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+                        />
+                    </div>
+                </motion.div>
             </section>
 
             {/* ═══════ STATS BAR ═══════ */}
@@ -321,12 +322,22 @@ function HomePage() {
     )
 }
 
+/* ── Scroll to top on every route change ── */
+function ScrollToTop() {
+    const { pathname } = useLocation()
+    useLayoutEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+    }, [pathname])
+    return null
+}
+
 /* ═══════════════════════════════════════════════════════
    App — Root with HashRouter
    ═══════════════════════════════════════════════════════ */
 export default function App() {
     return (
         <HashRouter>
+            <ScrollToTop />
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
